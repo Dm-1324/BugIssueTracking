@@ -28,7 +28,7 @@ public class IssueMapper {
                 .type(issue.getType())
                 .projectName(issue.getProject().getName())
                 .reporterName(issue.getReporter().getName())
-                .assigneeName(issue.getAssignee().getName())
+                .assigneeName(issue.getAssignee() != null ? issue.getAssignee().getName() : "UNASSIGNED")
                 .updatedAt(issue.getUpdatedAt())
                 .build();
     }

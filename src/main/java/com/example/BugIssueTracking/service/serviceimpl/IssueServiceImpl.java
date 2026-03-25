@@ -43,6 +43,12 @@ public class IssueServiceImpl implements IssueService {
         issue.setProject(project);
         issue.setReporter(reporter);
 
+        if (inputDTO.getAssigneeId() != null) {
+            User assignee = userRepository.findById(inputDTO.getAssigneeId())
+                    .orElseThrow(() -> new RuntimeException("Assignee not found"));
+            issue.setAssignee(assignee);
+        }
+
         Issue savedIssue = issueRepository.save(issue);
 
         activityLogService.createLog(issue, "Issue created by " + reporter.getName());

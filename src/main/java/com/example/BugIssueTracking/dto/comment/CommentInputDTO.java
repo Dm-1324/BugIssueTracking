@@ -1,6 +1,7 @@
 package com.example.BugIssueTracking.dto.comment;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,6 @@ public class CommentInputDTO {
     @NotBlank(message = "Message cannot be empty")
     private String message;
 
-    @NotBlank(message = "User ID is required")
+    @NotNull(message = "User ID is required")
     private Long userId;
 }

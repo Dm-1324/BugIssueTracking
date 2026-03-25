@@ -10,7 +10,6 @@ public class CommentMapper {
     public Comment toEntity(CommentInputDTO inputDTO) {
         return Comment.builder()
                 .message(inputDTO.getMessage())
-                .id(inputDTO.getUserId())
                 .build();
     }
 
