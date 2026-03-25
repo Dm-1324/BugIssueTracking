@@ -3,6 +3,7 @@ package com.example.BugIssueTracking.service.serviceimpl;
 import com.example.BugIssueTracking.dto.user.UserInputDTO;
 import com.example.BugIssueTracking.dto.user.UserOutputDTO;
 import com.example.BugIssueTracking.entity.User;
+import com.example.BugIssueTracking.exception.ResourceNotFoundException;
 import com.example.BugIssueTracking.mapper.UserMapper;
 import com.example.BugIssueTracking.repository.UserRepository;
 import com.example.BugIssueTracking.service.UserService;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserOutputDTO getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
         return userMapper.toOutputDto(user);
     }

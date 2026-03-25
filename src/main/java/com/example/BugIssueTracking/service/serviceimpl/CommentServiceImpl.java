@@ -5,6 +5,7 @@ import com.example.BugIssueTracking.dto.comment.CommentOutputDTO;
 import com.example.BugIssueTracking.entity.Comment;
 import com.example.BugIssueTracking.entity.Issue;
 import com.example.BugIssueTracking.entity.User;
+import com.example.BugIssueTracking.exception.ResourceNotFoundException;
 import com.example.BugIssueTracking.mapper.CommentMapper;
 import com.example.BugIssueTracking.repository.CommentRepository;
 import com.example.BugIssueTracking.repository.IssueRepository;
@@ -27,10 +28,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentOutputDTO addComment(Long issueId, CommentInputDTO inputDTO) {
         Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new RuntimeException("Issue not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Issue not found"));
 
         User author = userRepository.findById(inputDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("Author not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not Found"));
 
         Comment comment = commentMapper.toEntity(inputDTO);
         comment.setIssue(issue);

@@ -4,6 +4,7 @@ import com.example.BugIssueTracking.dto.project.ProjectInputDTO;
 import com.example.BugIssueTracking.dto.project.ProjectOutputDTO;
 import com.example.BugIssueTracking.entity.Project;
 import com.example.BugIssueTracking.entity.User;
+import com.example.BugIssueTracking.exception.ResourceNotFoundException;
 import com.example.BugIssueTracking.mapper.ProjectMapper;
 import com.example.BugIssueTracking.repository.ProjectRepository;
 import com.example.BugIssueTracking.repository.UserRepository;
@@ -39,9 +40,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     public void addMemberToProject(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         project.getTeamMembers().add(user);
         projectRepository.save(project);
@@ -51,7 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public boolean isUserInProject(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
         return project.getTeamMembers().stream()
                 .anyMatch(user -> user.getId().equals(userId));
 

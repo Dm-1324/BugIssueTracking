@@ -6,6 +6,8 @@ import com.example.BugIssueTracking.entity.Issue;
 import com.example.BugIssueTracking.entity.Project;
 import com.example.BugIssueTracking.entity.User;
 import com.example.BugIssueTracking.entity.enums.IssueStatus;
+import com.example.BugIssueTracking.exception.InvalidDataException;
+import com.example.BugIssueTracking.exception.ResourceNotFoundException;
 import com.example.BugIssueTracking.mapper.IssueMapper;
 import com.example.BugIssueTracking.repository.IssueRepository;
 import com.example.BugIssueTracking.repository.ProjectRepository;
@@ -34,10 +36,10 @@ public class IssueServiceImpl implements IssueService {
     @Transactional
     public IssueOutputDTO createIssue(Long projectId, IssueInputDTO inputDTO) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project Not Found"));
 
         User reporter = userRepository.findById(inputDTO.getReporterId())
-                .orElseThrow(() -> new RuntimeException("Reporter not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Reporter not found"));
 
         Issue issue = issueMapper.toEntity(inputDTO);
         issue.setProject(project);
@@ -45,7 +47,7 @@ public class IssueServiceImpl implements IssueService {
 
         if (inputDTO.getAssigneeId() != null) {
             User assignee = userRepository.findById(inputDTO.getAssigneeId())
-                    .orElseThrow(() -> new RuntimeException("Assignee not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Assignee not found"));
             issue.setAssignee(assignee);
         }
 
@@ -60,7 +62,7 @@ public class IssueServiceImpl implements IssueService {
     @Transactional
     public IssueOutputDTO updateStatus(Long issueId, IssueStatus issueStatus) {
         Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new RuntimeException("Issue not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Issue not found"));
 
         String logMessage = "Status changed from " + issue.getStatus() + " to " + issueStatus;
         issue.setStatus(issueStatus);
@@ -75,13 +77,13 @@ public class IssueServiceImpl implements IssueService {
     @Transactional
     public IssueOutputDTO assignUser(Long issueId, Long userId) {
         Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new RuntimeException("Issue not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Issue not found"));
 
         User assignee = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Assignee not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Assignee not Found"));
 
         if (!projectService.isUserInProject(issue.getProject().getId(), assignee.getId())) {
-            throw new RuntimeException("User is not a member of this project");
+            throw new InvalidDataException("User is not a member of this project");
         } else {
             issue.setAssignee(assignee);
         }
